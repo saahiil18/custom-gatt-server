@@ -1,4 +1,4 @@
-"""This is Server that mimics Vendekin Hardware,
+"""This is Server that mimics any Bluetooth Hardware,
  all you have to do is on the terminal type this
  as "python uart_peripheral.py <machine name> <vend or no_vend>
  When the App connects to the Server it starts notification and the
@@ -37,21 +37,6 @@ arguments_list = sys.argv
 machine_name = sys.argv[1]
 vend_status = sys.argv[2]
 logging.root.setLevel(logging.NOTSET)
-cash_string = {
-    'Alpha-Numeric': 'A01-1023@A02-1011@B01-1013@B02-1007',
-    'Numeric': '101-100@102-100@201-100@202-100',
-}
-
-success_codes = {
-    'success_seaga': 'start ssn\r\nvend req\r\nvnd sec\r\nsucess\r\n019091001\r\n019091001\r\n019091001\r\n019091001\r\n019091001\r\nread enable\r\n',
-    'success_dexi-narco': 'start ssn\r\nvend req\r\nvnd sec\r\nsucess\r\n019091001\r\nssn complete\r\nend ssn\r\n',
-    'success_marico': 'COMMAND SUCCESS\r\ndespensing complete\r\nDispensed\r\n019091001\r\nDispensed\r\n019091001\r\nDispensed\r\n019091001\r\nDispensed\r\n019091001\r\nDispensed\r\n019091001\r\nDispensed\r\n019091001\r\nDispensed\r\n019091001\r\n'
-}
-
-error_codes = {
-    'error_seaga': 'start ssn\r\nstart ssn\r\nstart ssn\r\nstart ssn\r\nstart ssn\r\nstart ssn\r\nstart ssn\r\nno vend case\r\nread enable\r\n',
-    'error_dexi-narco': 'start ssn\r\nno vend case\r\n019091001\r\nssn complete\r\nend ssn\r\n'
-}
 
 
 def ProcessCS():
@@ -77,36 +62,6 @@ def ACKResponse():
         response.append(dbus.Byte(v.encode()))
     return response
 
-
-seaga = {
-    '$D$': ProcessD,
-    '$CS$': ProcessCS,
-    '$ACK_ST$': ACKResponse
-}
-
-dexi_narco = {
-    '$D$': ProcessD,
-    '$CS$': ProcessCS,
-    '$ACT_ST': ACKResponse
-}
-
-marico = {
-    'ACK_RD': ACKResponse,
-    '$CS$': ProcessCS
-
-}
-
-machine_map = {
-    'seaga': seaga,
-    'dexi-narco': dexi_narco,
-    'marico': marico
-}
-
-notification_map = {
-    'seaga': '\r\n',
-    'dexi-narco': '\r\n',
-    'marico': 'MACHINE READY\r\n',
-}
 
 
 def ProcessDispense(some_value):
